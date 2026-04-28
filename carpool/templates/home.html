@@ -1,0 +1,268 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home | Smart Carpool{% endblock %}
+
+{% block content %}
+<!-- Dark/Light Mode Toggle -->
+<div class="flex justify-end p-4">
+  <button id="toggleTheme" class="text-xl p-2 rounded-full bg-gray-200 dark:bg-gray-800 text-yellow-500 dark:text-white shadow-md">
+    <i id="themeIcon" class="fas fa-moon"></i>
+  </button>
+</div>
+
+<!-- Bootstrap & Carousel Dependencies -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+<!-- Carousel Section -->
+<div id="carouselExampleIndicators" class="carousel slide mb-12 rounded-xl overflow-hidden shadow-2xl" data-ride="carousel" data-interval="false">
+  <ol class="carousel-indicators">
+    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+  </ol>
+  <div class="carousel-inner">
+    <div class="carousel-item active" data-type="image" data-delay="2000">
+      <img class="d-block w-100" src="{% static 'images/img5.jpeg' %}" alt="First slide" style="height: 500px; object-fit: cover;">
+    </div>
+    <div class="carousel-item" data-type="video">
+      <video class="d-block w-100" muted style="height: 500px; object-fit: cover;">
+        <source src="{% static 'images/carpool.mp4' %}" type="video/mp4">
+      </video>
+    </div>
+    <div class="carousel-item" data-type="video">
+      <video class="d-block w-100" muted style="height: 500px; object-fit: cover;">
+        <source src="{% static 'images/carpool2.mp4' %}" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const carousel = $('#carouselExampleIndicators');
+    const items = carousel.find('.carousel-item');
+    let currentIndex = 0;
+
+    function goToNextSlide() {
+      currentIndex = (currentIndex + 1) % items.length;
+      carousel.carousel(currentIndex);
+    }
+
+    function scheduleNextSlide() {
+      const currentItem = items.eq(currentIndex);
+      const type = currentItem.data('type');
+
+      if (type === 'image') {
+        const delay = currentItem.data('delay') || 2000;
+        setTimeout(() => {
+          goToNextSlide();
+          scheduleNextSlide();
+        }, delay);
+      } else if (type === 'video') {
+        const video = currentItem.find('video').get(0);
+        video.currentTime = 0;
+        video.play();
+        video.onended = () => {
+          goToNextSlide();
+          scheduleNextSlide();
+        };
+      }
+    }
+
+    scheduleNextSlide();
+  });
+</script>
+
+<!-- Dark/Light Mode Script -->
+<script>
+  const toggleBtn = document.getElementById('toggleTheme');
+  const rootElement = document.documentElement;
+  const themeIcon = document.getElementById('themeIcon');
+  toggleBtn.addEventListener('click', () => {
+    rootElement.classList.toggle('dark');
+    if (rootElement.classList.contains('dark')) {
+      themeIcon.classList.remove('fa-moon');
+      themeIcon.classList.add('fa-sun');
+    } else {
+      themeIcon.classList.remove('fa-sun');
+      themeIcon.classList.add('fa-moon');
+    }
+  });
+</script>
+
+<!-- Tailwind Dark Mode Support -->
+<style>
+  html.dark {
+    background-color: #1a202c;
+    color: white;
+  }
+  html.dark .bg-white {
+    background-color: #2d3748 !important;
+  }
+  html.dark .text-gray-700,
+  html.dark .text-gray-600,
+  html.dark .text-gray-900 {
+    color: #e2e8f0 !important;
+  }
+  html.dark .text-blue-700 {
+    color: #90cdf4 !important;
+  }
+  html.dark .bg-blue-100 {
+    background-color: #2a4365 !important;
+  }
+  html.dark a {
+    color: #63b3ed !important;
+  }
+</style>
+
+<!-- Existing Page Content Below -->
+<section class="text-center mt-10 mb-6">
+  <h1 class="text-5xl font-extrabold text-blue-800 dark:text-blue-300">Welcome to SmartCarpool</h1>
+  <p class="text-lg mt-2 text-gray-600 dark:text-gray-300">Connecting Kerala, one ride at a time</p>
+</section>
+
+  <!-- Dashboard Cards -->
+<!-- Wide, Clean Ride Search Bar -->
+<div class="max-w-7xl mx-auto mt-12 px-4">
+  <form method="POST" action="{% url 'searchmycar' %}" class="flex flex-col md:flex-row items-center bg-white rounded-full shadow-lg overflow-hidden w-full">
+
+    {% csrf_token %}
+
+    <!-- Leaving From -->
+    <div class="flex items-center px-5 py-4 space-x-3 flex-1">
+      <i class="fa fa-dot-circle-o text-blue-600 text-xl"></i>
+      <input type="text" name="from_place" placeholder="Leaving from" required
+        class="bg-transparent focus:outline-none w-full text-gray-700 placeholder-gray-500 text-base">
+    </div>
+
+    <!-- Divider -->
+    <div class="hidden md:block border-l h-6 border-gray-300"></div>
+
+    <!-- Going To -->
+    <div class="flex items-center px-5 py-4 space-x-3 flex-1">
+      <i class="fa fa-dot-circle-o text-green-600 text-xl"></i>
+      <input type="text" name="to_place" placeholder="Going to" required
+        class="bg-transparent focus:outline-none w-full text-gray-700 placeholder-gray-500 text-base">
+    </div>
+
+    <!-- Divider -->
+    <div class="hidden md:block border-l h-6 border-gray-300"></div>
+<div class="relative flex items-center px-5 py-4 space-x-3 flex-1">
+
+
+  <i class="fa fa-calendar text-purple-600 text-xl"></i>
+  <input type="date" name="travel_date" id="travelDate" required
+    class="bg-transparent focus:outline-none w-full text-gray-700 placeholder-transparent text-base peer">
+</div>
+
+<!-- JavaScript to set default date -->
+<script>
+  const dateInput = document.getElementById('dateField');
+  const Today = new Date().toISOString().split('T')[0];
+  dateInput.value = Today;
+</script>
+
+
+
+    <!-- Divider -->
+    <div class="hidden md:block border-l h-6 border-gray-300"></div>
+
+    <!-- Passenger -->
+    <div class="flex items-center px-5 py-4 space-x-3 flex-1">
+      <i class="fa fa-user text-pink-600 text-xl"></i>
+      <input type="number" name="seat_count" min="1" max="5" placeholder="1 passenger"
+        class="bg-transparent focus:outline-none w-full text-gray-700 placeholder-gray-500 text-base">
+    </div>
+
+<!-- Search Button -->
+
+<button type="submit"
+  class="text-white font-semibold text-base px-12 py-4 rounded-r-full rounded-l-none whitespace-nowrap transition duration-200"
+  style="background-color: #158eba;">
+  Search
+</button>
+
+
+  </form>
+</div>
+
+
+<br>
+<br>
+
+<br>
+<br>
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-10 px-6 mb-16">
+  <div class="text-left hover:shadow-xl transition">
+    <img src="{% static 'images/icon.png' %}" class="w-20 h-20 mb-4 mr-auto" alt="Low price rides">
+    <h2 class="text-2xl font-bold text-black mb-2">Affordable Rides</h2>
+    <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+      Whether it's by bus or carpool, enjoy budget-friendly rides to your destination with ease and comfort.
+    </p>
+  </div>
+
+  <div class="text-left hover:shadow-xl transition">
+    <img src="{% static 'images/icon2.png' %}" class="w-20 h-20 mb-4 mr-auto" alt="Trusted members">
+    <h2 class="text-2xl font-bold text-black mb-2">Verified Members</h2>
+    <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+      Travel with confidence. Our community is built on verified IDs, honest reviews, and safe, respectful rides.
+    </p>
+  </div>
+
+  <div class="text-left hover:shadow-xl transition">
+    <img src="{% static 'images/icon3.png' %}" class="w-20 h-20 mb-4 mr-auto" alt="Easy booking">
+    <h2 class="text-2xl font-bold text-black mb-2">Instant Booking</h2>
+    <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+      Book your ride in just a few taps. Our app is built for simplicity, speed, and convenience.
+    </p>
+  </div>
+</section>
+
+
+
+<section class="bg-blue-100 dark:bg-gray-800 text-gray-900 dark:text-white py-20 px-6">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
+    <div class="w-full md:w-1/2">
+      <img src="{% static 'images/logo.svg' %}" alt="Scam Awareness" class="w-full h-auto max-h-72 object-contain drop-shadow-xl">
+    </div>
+    <div class="w-full md:w-1/2 text-center md:text-left">
+      <h2 class="text-4xl font-extrabold mb-4 text-blue-700 dark:text-blue-300">Stay Alert. Stay Safe.</h2>
+      <p class="text-lg mb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
+        We're committed to safety. Be aware of suspicious activity, report it, and help us keep our platform secure for everyone.
+      </p>
+      <a href="#" class="inline-block bg-blue-600 text-white font-semibold py-2.5 px-8 rounded-full hover:bg-blue-700 transition duration-300">
+        Learn More
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto px-6 mt-16 mb-20">
+  <div>
+    <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-300 mb-3">Contact Us</h3>
+    <p class="mb-1"><i class="fa fa-home mr-2 text-blue-400"></i> Address: XXXXXXX Street</p>
+    <p class="mb-1"><i class="fa fa-phone mr-2 text-blue-400"></i> Mobile: 1234567890</p>
+    <p><i class="fa fa-envelope mr-2 text-blue-400"></i> Email: abc@gmail.com</p>
+  </div>
+  <div>
+    <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-300 mb-3">Quick Links</h3>
+    <a href="{% url 'home' %}" class="text-blue-600 dark:text-blue-300 block hover:underline mb-1">Home</a>
+    <a href="{% url 'contact' %}" class="text-blue-600 dark:text-blue-300 block hover:underline mb-1">Contact</a>
+    <a href="{% url 'login' %}" class="text-blue-600 dark:text-blue-300 block hover:underline mb-1">Login</a>
+    <a href="{% url 'register' %}" class="text-blue-600 dark:text-blue-300 block hover:underline">Register</a>
+  </div>
+</section>
+{% endblock %}
+

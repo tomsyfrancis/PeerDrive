@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Your car is booked</title>
+
+  <!-- External CSS & JS -->
+  <link href="https://fonts.googleapis.com/css?family=Kalam|Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  <!-- Static CSS -->
+  <link rel="stylesheet" href="{% static 'styles/registration.css' %}">
+  <link rel="stylesheet" href="{% static 'styles/home.css' %}">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f3f6f9;
+      margin: 0;
+    }
+
+    .topnav {
+      background: #ffffff;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .topnav h1 {
+      font-size: 24px;
+      color: #09333f;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .topnav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+    }
+
+    .topnav ul li a {
+      text-decoration: none;
+      color: #09333f;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .topnav ul li a:hover,
+    .topnav ul li a.active {
+      background-color: #e6f2f8;
+    }
+
+    #themeToggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #09333f;
+    }
+
+    #themeToggle:hover {
+      color: #555;
+    }
+
+    .container2 {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .abc {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+      width: 100%;
+      font-size: 15px;
+      border-collapse: collapse;
+    }
+
+    table td {
+      padding: 12px 18px;
+      border: none;
+      vertical-align: top;
+    }
+
+    table td:first-child {
+      font-weight: 600;
+      color: #09333f;
+      width: 200px;
+    }
+
+    .alert {
+      max-width: 700px;
+      margin: 20px auto;
+    }
+
+    footer, .footer {
+      background: #f1f5f9;
+      padding: 40px 20px;
+      margin-top: 60px;
+    }
+
+    .footer h3 {
+      color: #09333f;
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+
+    .footer i,
+    .footer a {
+      color: #444;
+      margin-bottom: 5px;
+      display: block;
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .topnav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .topnav ul {
+        flex-direction: column;
+      }
+
+      table td {
+        display: block;
+        width: 100%;
+      }
+
+      table td:first-child {
+        margin-top: 10px;
+      }
+    }
+
+    body.dark-mode {
+      background: #1a1a1a;
+      color: #f0f0f0;
+    }
+
+    body.dark-mode .topnav {
+      background-color: #2a2a2a;
+    }
+
+    body.dark-mode .topnav a {
+      color: #ffffff;
+    }
+
+    body.dark-mode .abc,
+    body.dark-mode .alert,
+    body.dark-mode footer {
+      background-color: #2c2c2c;
+      color: #eaeaea;
+    }
+
+    body.dark-mode table td:first-child {
+      color: #ffffff;
+    }
+
+    body.dark-mode .footer a {
+      color: #ccc;
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleBtn = document.getElementById('themeToggle');
+      toggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        toggleBtn.querySelector('i').classList.toggle('fa-moon');
+        toggleBtn.querySelector('i').classList.toggle('fa-sun');
+      });
+    });
+  </script>
+</head>
+
+<body>
+
+
+
+  <!-- Messages -->
+  <div>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <center>{{ message }}</center>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <!-- Booking Info -->
+  <div class="container2">
+    <div class="abc">
+      <table>
+        <tr><td><i class="fas fa-car"></i> Name</td><td>{{book.0.car.car_name}} {{book.0.car.car_type}}</td></tr>
+       
+        <tr><td><i class="fas fa-id-card"></i> Car Number</td><td>{{book.0.car.car_num}}</td></tr>
+        <!-- <tr><td><i class="fas fa-rupee-sign"></i> Price Per Day</td><td>{{book.car.price}}</td></tr> -->
+        <tr><td><i class="fas fa-hashtag"></i> Booking Ref No.</td><td>{{book.0.id}}</td></tr>
+        <tr><td><i class="fas fa-calendar-day"></i> Booking Date</td><td>{{book.0.date_added}}</td></tr>
+        <tr><td><i class="fas fa-user"></i> Owner</td><td>{{book.0.car.cust.fname}}</td></tr>
+        <tr><td><i class="fas fa-phone"></i> Owner Contact</td><td>{{book.0.car.cust.mobile}}</td></tr>
+        <tr><td><i class="fas fa-user-circle"></i> Customer</td><td>{{book.0.name}}</td></tr>
+        <tr><td><i class="fas fa-phone-square"></i> Contact</td><td>{{book.0.contact}}</td></tr>
+        <tr><td><i class="fas fa-envelope"></i> Email</td><td>{{book.0.email}}</td></tr>
+        <tr><td><i class="fas fa-calendar-plus"></i> PickUp Date</td><td>{{book.0.pickup}}</td></tr>
+        <tr><td><i class="fas fa-calendar-check"></i> Drop Date</td><td>{{book.0.dropoff}}</td></tr>
+        <tr><td><i class="fas fa-map-marker-alt"></i> PickUp Address</td><td>{{book.0.pick_add}}</td></tr>
+        <tr><td><i class="fas fa-map-pin"></i> Drop Address</td><td>{{book.0.drop_add}}</td></tr>
+      </table>
+    </div>
+    <!-- Pay Button -->
+     
+{% if book %}
+  {% with b=book.0 %}
+  
+    <form method="post" action="{% url 'payments' %}">
+      {% csrf_token %}
+      <button type="submit" class="w-full bg-blue-400 hover:bg-blue-500 text-blue-700 py-3 rounded-xl font-semibold transition duration-200 shadow-sm">
+        Pay ₹{{ b.car.price }}
+      </button>
+    </form>
+  {% endwith %}
+{% else %}
+  <p>No bookings found.</p>
+{% endif %}
+
+ </div>
+ </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="section1">
+      <h3>Contact us</h3>
+      <i class="fa fa-home"> Address: XXXXXXX Street</i>
+      <i class="fa fa-phone"> Mobile: 1234567890</i>
+      <i class="fa fa-envelope"> Email: abc@gmail.com</i>
+    </div>
+    <div class="section1">
+      <h3>Project Links</h3>
+      <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'contact' %}">Contact</a>
+      <a href="{% url 'allcars' %}">Cars</a>
+      <a href="{% url 'searchmycar' %}">Book</a>
+    </div>
+  </div>
+
+</body>
+</html>
+{% endblock %}

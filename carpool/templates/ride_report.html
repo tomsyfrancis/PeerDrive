@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto bg-white p-6 mt-6 rounded-xl shadow-md">
+  <h2 class="text-2xl font-semibold mb-6 text-blue-700">Ride Report</h2>
+
+  <!-- Filter Form -->
+  <form method="get" class="mb-6 flex flex-wrap gap-4">
+    <div>
+      <label for="from_date" class="block text-sm font-medium text-gray-700">From Date</label>
+      <input type="date" name="from_date" id="from_date" value="{{ from_date }}"
+             class="mt-1 p-2 border rounded-lg w-full">
+    </div>
+    <div>
+      <label for="to_date" class="block text-sm font-medium text-gray-700">To Date</label>
+      <input type="date" name="to_date" id="to_date" value="{{ to_date }}"
+             class="mt-1 p-2 border rounded-lg w-full">
+    </div>
+    <div class="self-end">
+      <button type="submit"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg mt-4">
+        Filter
+      </button>
+    </div>
+  </form>
+
+  {% if bookings %}
+  <table class="min-w-full table-auto border border-gray-300 text-sm">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="border px-4 py-2 text-left">Date</th>
+        <th class="border px-4 py-2 text-left">Pickup</th>
+        <th class="border px-4 py-2 text-left">Dropoff</th>
+        <th class="border px-4 py-2 text-left">Email</th>
+        <th class="border px-4 py-2 text-left">Contact</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for booking in bookings %}
+      <tr class="hover:bg-gray-50">
+        <td class="border px-4 py-2">{{ booking.date_added|date:"Y-m-d H:i" }}</td>
+        <td class="border px-4 py-2">{{ booking.pickup }}</td>
+        <td class="border px-4 py-2">{{ booking.dropoff }}</td>
+        <td class="border px-4 py-2">{{ booking.email }}</td>
+        <td class="border px-4 py-2">{{ booking.contact }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No ride bookings found for the selected date range.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

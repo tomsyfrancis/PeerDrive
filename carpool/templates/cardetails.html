@@ -1,0 +1,477 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book your Car</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap' rel='stylesheet'>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <!-- Static CSS -->
+  <link rel="stylesheet" href="{% static 'styles/registration.css' %}">
+  <link rel="stylesheet" href="{% static 'styles/home.css' %}">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f3f6f9;
+      margin: 0;
+    }
+
+    /* Navbar */
+    .topnav {
+      background: #ffffff;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .topnav h1 {
+      font-size: 24px;
+      color: #09333f;
+      font-weight: 700;
+      margin: 0;
+    }
+    .topnav ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+    .topnav ul li {
+      margin-left: 20px;
+    }
+    .topnav a {
+      text-decoration: none;
+      color: #09333f;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .topnav a:hover,
+    .topnav .active {
+      background-color: #e6f2f8;
+    }
+
+    /* Main Container */
+    .container2 {
+      max-width: 1140px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    /* Car Card */
+    .abc {
+      display: flex;
+      flex-wrap: wrap;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    .abc img {
+      width: 300px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-right: 30px;
+    }
+    table {
+      flex: 1;
+      font-size: 15px;
+      border-collapse: collapse;
+    }
+    table td {
+      padding: 12px 18px;
+      border: 1px solid #e0e0e0;
+    }
+    table td:first-child {
+      background: #f0f7fb;
+      font-weight: 600;
+      color: #09333f;
+      width: 150px;
+    }
+
+    /* Form Section */
+    .title {
+      font-size: 26px;
+      font-weight: 600;
+      text-align: center;
+      color: #09333f;
+      margin-bottom: 20px;
+    }
+    .content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .input-box input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    #add {
+      width: 100%;
+      background: #09333f;
+      color: white;
+      padding: 14px;
+      font-weight: 600;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    #add:hover {
+      background: #136a88;
+    }
+
+    /* Map */
+    #map {
+      height: 400px;
+      width: 100%;
+      border-radius: 12px;
+      margin: 30px 0;
+      display: block;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    /* Footer */
+    footer {
+      background: #f1f5f9;
+      padding: 40px 20px;
+      margin-top: 60px;
+    }
+    footer h4 {
+      color: #09333f;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    footer p, footer a {
+      color: #444;
+      margin-bottom: 5px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    /* Alerts */
+    .alert {
+      max-width: 700px;
+      margin: 20px auto;
+    }
+
+    @media (max-width: 768px) {
+      .abc {
+        flex-direction: column;
+        align-items: center;
+      }
+      .abc img {
+        margin-bottom: 20px;
+        margin-right: 0;
+      }
+      .topnav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .topnav ul {
+        flex-direction: column;
+      }
+    }
+  </style>
+  
+<style>
+  .topnav {
+    background-color: #ffffff; /* Blue background */
+    padding: 5px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .topnav h1 {
+    font-size: 20px;
+    color: rgb(81, 177, 255);
+    margin: 0;
+  }
+
+  .topnav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 15px;
+  }
+
+  .topnav ul li {
+    display: inline;
+  }
+
+  .topnav ul li a {
+    color: rgb(68, 107, 249);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+
+  .topnav ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .text-danger {
+    color: #f23131 !important;
+  }
+
+  #themeToggle {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  #themeToggle:hover {
+    color: #e0e0e0;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    document.getElementById("pickupDate").value = today;
+  });
+</script>
+<!-- Leaflet Routing Machine CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+<!-- Leaflet Routing Machine JS -->
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
+
+</head>
+<body>
+
+  <!-- Navbar -->
+  <!-- FontAwesome for moon icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+
+
+
+  <!-- Alert Messages -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-warning text-center">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+  
+<section class="bg-blue-100 dark:bg-gray-800 text-gray-900 dark:text-white py-20 px-6">
+ 
+    
+    
+
+{% if car %}
+<div class="min-h-screen flex flex-col md:flex-row items-start justify-center bg-gray-100 p-4 font-[Poppins] gap-6">
+  <!-- Ride Card -->
+ <div class="min-h-screen flex flex-col md:flex-row items-start justify-start bg-gray-100 p-4 font-[Poppins] gap-6">
+    <div class="p-6 space-y-6">
+      <div class="space-y-5">
+        <!-- Time and Duration -->
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          <div class="flex justify-between items-center relative">
+            <div class="flex flex-col items-start space-y-1">
+              <span class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                {{ car.from_date|time:"H:i" }}
+              </span>
+              <span class="text-xs text-gray-500">Start-------</span>
+              <span class="absolute left-1/2 transform -translate-x-1/2 top-4 bg-white dark:bg-gray-800 px-2 text-xs text-green-600 font-medium shadow-sm">
+                {{ car.duration_min }} mins
+              </span>
+              <span class="text-xs text-gray-500">-------Arrival</span>
+              <span class="text-lg font-semibold text-gray-800 dark:text-gray-200 mt-4">
+                {{ car.estimated_arrival|time:"H:i" }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Route Info -->
+        <div class="flex items-center text-sm text-gray-700 dark:text-gray-300 gap-2">
+          <i class="fas fa-map-marker-alt text-green-500"></i>
+          <span id="fromPlace" class="font-medium">{{ car.from_place }}</span>
+          <i class="fas fa-arrow-right text-gray-400 mx-1"></i>
+          <span id="toPlace" class="font-medium">{{ car.to_place }}</span>
+          {% if car.distance_km %}
+          <span class="ml-2 text-xs text-gray-500">({{ car.distance_km }} km)</span>
+          {% endif %}
+        </div>
+
+        <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          <i class="fas fa-user text-blue-500"></i>
+          <span>{{ car.cust.fname }}</span>
+        </div>
+
+        <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+          <i class="fas fa-car text-blue-500 mr-3"></i>
+          <span>{{ car.car_name }} {{ car.car_type }}</span>
+        </div>
+
+        <div class="text-blue-600 dark:text-blue-400 font-bold text-2xl">₹{{ car.price }} per day</div>
+      </div>
+
+      <!-- Booking Form -->
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div class="flex items-center bg-gray-100 rounded-xl px-4 py-3">
+          <i class="fas fa-phone-alt text-blue-500 mr-3"></i>
+          <input type="text" name="contact" placeholder="Contact Number" class="w-full bg-transparent outline-none text-sm" required>
+        </div>
+        <div class="flex items-center bg-gray-100 rounded-xl px-4 py-3">
+          <i class="fas fa-envelope text-blue-500 mr-3"></i>
+          <input type="email" name="email" placeholder="Email" class="w-full bg-transparent outline-none text-sm" required>
+        </div>
+        <div class="flex items-center bg-gray-100 rounded-xl px-4 py-3">
+          <i class="fas fa-calendar-alt text-blue-500 mr-3"></i>
+          <input name="pickup" id="pickupDate" type="date" class="w-full bg-transparent outline-none text-sm" required>
+        </div>
+        <input type="hidden" name="dropoff" id="dropoffDate">
+        <div class="flex items-center bg-gray-100 rounded-xl px-4 py-3">
+          <i class="fas fa-map-marker text-blue-500 mr-3"></i>
+          <input type="text" name="pick_add" placeholder="PickUp Address" class="w-full bg-transparent outline-none text-sm" required>
+        </div>
+        <div class="flex items-center bg-gray-100 rounded-xl px-4 py-3">
+          <i class="fas fa-location-arrow text-blue-500 mr-3"></i>
+          <input type="text" name="drop_add" placeholder="DropOff Address" class="w-full bg-transparent outline-none text-sm" required>
+        </div>
+        <button type="submit" class="w-full bg-blue-400 hover:bg-blue-500 text-blue-700 py-3 rounded-xl font-semibold transition duration-200 shadow-sm">
+          <i class="fas fa-bolt mr-2"></i>Book My Car
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="map" style="height: 500px;"></div>
+
+<script>
+  // Create the map centered on Kerala
+  var map = L.map('map').setView([10.1, 76.3], 10);
+
+  // Add OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>'
+  }).addTo(map);
+
+  // Define your start and end points
+  var startLatLng = L.latLng(10.1912, 76.3864); // Angamaly
+  var endLatLng = L.latLng(10.1065, 76.3516);   // Aluva
+
+  // Add Routing
+  L.Routing.control({
+    waypoints: [
+      startLatLng,
+      endLatLng
+    ],
+    routeWhileDragging: false,
+    show: false,
+    addWaypoints: false
+  }).addTo(map);
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const today = new Date().toISOString().split('T')[0];
+    const pickupInput = document.getElementById("pickupDate");
+    const dropoffInput = document.getElementById("dropoffDate");
+
+    // Set both dates to today by default
+    pickupInput.value = today;
+    dropoffInput.value = today;
+
+    // Keep dropoff date in sync with pickup
+    pickupInput.addEventListener("change", function () {
+      dropoffInput.value = this.value;
+    });
+  });
+</script>
+
+{% endif %}
+
+</section>
+
+    <!-- <div id="map"></div> -->
+  <!-- Footer -->
+  <footer>
+    <div class="row">
+      <div class="col-md-6">
+        <h4>Contact Us</h4>
+        <p><i class="fa fa-home"></i> Address No: XXXXXXX Street</p>
+        <p><i class="fa fa-phone"></i> 1234567890</p>
+        <p><i class="fa fa-envelope"></i> abc@gmail.com</p>
+      </div>
+      <div class="col-md-6">
+        <h4>Quick Links</h4>
+        <p><a href="{% url 'home' %}">Home</a></p>
+        <p><a href="{% url 'contact' %}">Contact</a></p>
+        <p><a href="{% url 'allcars' %}">Cars</a></p>
+        <p><a href="{% url 'searchmycar' %}">Book</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS for Leaflet Map -->
+  <script>
+    const fromPlace = document.getElementById("fromPlace").textContent.trim().toLowerCase();
+    const toPlace = document.getElementById("toPlace").textContent.trim().toLowerCase();
+
+    const locations = {
+      "angamaly": [10.1900, 76.3875],
+      "aluva": [10.1065, 76.3516],
+      "kakkanad": [10.0159, 76.3419],
+      "infopark phase 1": [10.0150, 76.3275],
+      "infopark phase 2": [10.0189, 76.3620],
+      "thrikkakara": [10.0282, 76.3087],
+      "kochi": [9.9312, 76.2673]
+    };
+
+    function getCoords(place) {
+      return locations[place] || [10.0159, 76.3419];
+    }
+
+    const start = getCoords(fromPlace);
+    const end = getCoords(toPlace);
+    const via = getCoords("aluva");
+
+    const map = L.map('map').setView(start, 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const routePoints = [start, via, end];
+    L.polyline(routePoints, { color: 'blue', weight: 4 }).addTo(map);
+    L.marker(start).addTo(map).bindPopup("Start: " + fromPlace.charAt(0).toUpperCase() + fromPlace.slice(1)).openPopup();
+    L.marker(via).addTo(map).bindPopup("Via: Aluva");
+    L.marker(end).addTo(map).bindPopup("End: " + toPlace.charAt(0).toUpperCase() + toPlace.slice(1));
+  </script>
+</body>
+</html>
+{% endblock %}

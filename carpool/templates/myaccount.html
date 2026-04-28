@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Kalam' rel='stylesheet'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <title>My Account Details</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/registration.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/home.css'%}">
+
+    <style>
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f3f6f9;
+      margin: 0;
+    }
+
+    .topnav {
+      background: #ffffff;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .topnav h1 {
+      font-size: 24px;
+      color: #09333f;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .topnav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+    }
+
+    .topnav ul li a {
+      text-decoration: none;
+      color: #09333f;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .topnav ul li a:hover,
+    .topnav ul li a.active {
+      background-color: #e6f2f8;
+    }
+
+    #themeToggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #09333f;
+    }
+
+    #themeToggle:hover {
+      color: #555;
+    }
+
+    .container2 {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .abc {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+      width: 100%;
+      font-size: 15px;
+      border-collapse: collapse;
+    }
+
+    table td {
+      padding: 12px 18px;
+      border: none;
+      vertical-align: top;
+    }
+
+    table td:first-child {
+      font-weight: 600;
+      color: #09333f;
+      width: 200px;
+    }
+
+    .alert {
+      max-width: 700px;
+      margin: 20px auto;
+    }
+
+    footer, .footer {
+      background: #f1f5f9;
+      padding: 40px 20px;
+      margin-top: 60px;
+    }
+
+    .footer h3 {
+      color: #09333f;
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+
+    .footer i,
+    .footer a {
+      color: #444;
+      margin-bottom: 5px;
+      display: block;
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .topnav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .topnav ul {
+        flex-direction: column;
+      }
+
+      table td {
+        display: block;
+        width: 100%;
+      }
+
+      table td:first-child {
+        margin-top: 10px;
+      }
+    }
+
+    body.dark-mode {
+      background: #1a1a1a;
+      color: #f0f0f0;
+    }
+
+    body.dark-mode .topnav {
+      background-color: #2a2a2a;
+    }
+
+    body.dark-mode .topnav a {
+      color: #ffffff;
+    }
+
+    body.dark-mode .abc,
+    body.dark-mode .alert,
+    body.dark-mode footer {
+      background-color: #2c2c2c;
+      color: #eaeaea;
+    }
+
+    body.dark-mode table td:first-child {
+      color: #ffffff;
+    }
+
+    body.dark-mode .footer a {
+      color: #ccc;
+    }
+    .no-border {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: 16px;
+  width: 100%;
+}
+
+table td {
+  padding: 10px 8px;
+  vertical-align: middle;
+}
+
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleBtn = document.getElementById('themeToggle');
+      toggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        toggleBtn.querySelector('i').classList.toggle('fa-moon');
+        toggleBtn.querySelector('i').classList.toggle('fa-sun');
+      });
+    });
+  </script>
+</head>
+
+<body>
+
+  
+  <div class="cssanimation sequence fadeInBottom">
+  <div class="container1">
+    <div class="title">
+      <h3>Details of User</h3>
+    </div>
+
+    <div class="content">
+      <form action="#" method="post">
+        {% if user.is_authenticated %}
+        <table style="width: 100%; font-size: 16px;">
+          <tr>
+            <td><i class="fa fa-user"></i> Full Name</td>
+            <td><input name="Name" value="{{ cust.fname }}" class="no-border" /></td>
+          </tr>
+          <tr>
+            <td><i class="fa fa-user-circle"></i> Username</td>
+            <td><input name="Username" value="{{ cust.usern }}" class="no-border" /></td>
+          </tr>
+          <tr>
+            <td><i class="fa fa-envelope"></i> Email</td>
+            <td><input name="Email" value="{{ cust.email }}" class="no-border" /></td>
+          </tr>
+          <tr>
+            <td><i class="fa fa-phone"></i> Phone</td>
+            <td><input name="Phone" value="{{ cust.mobile }}" class="no-border" /></td>
+          </tr>
+          
+        </table>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+        <div class="section1">
+            <h3>Contact us</h3>
+            <i class="fa fa-home">Address No: XXXXXXX Street</i></br>
+            <i class="fa fa-phone">Mobile: 1234567890</i></br>
+            <i class="fa fa-envelope">Email: abc@gmail.com</i></br>
+        </div>
+        <div class="section1">
+            <h3>Project Links</h3>
+            <a href="{% url 'home' %}">Home</a></br>
+            <a href="{% url 'contact' %}">Contact</a></br>
+            <a href="{% url 'allcars' %}">Cars</a></br>
+            <a href="{% url 'searchmycar' %}">Book</a></br>
+        </div>
+
+    </footer>
+
+</body>
+
+
+</html>
+{% endblock %}

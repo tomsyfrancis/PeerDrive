@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Available Rides | Smart Carpool</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.getElementById('themeToggle');
+      toggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        const icon = toggle.querySelector('i');
+        icon.classList.toggle('fa-sun');
+        icon.classList.toggle('fa-moon');
+      });
+    });
+  </script>
+  
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-[Poppins]">
+
+<!-- Navbar -->
+
+
+<!-- Main Section -->
+<main class="max-w-7xl mx-auto mt-10 px-4 md:flex gap-8">
+  <!-- Sidebar -->
+  <aside class="w-full md:w-1/4 bg-white dark:bg-gray-800 p-6 rounded-xl shadow space-y-6">
+    <div>
+      <h2 class="text-lg font-semibold mb-2 text-blue-600 dark:text-blue-300">Sort By</h2>
+      <ul class="space-y-2 text-sm">
+        <li><input type="radio" name="sort" class="mr-2">Earliest departure</li>
+        <li><input type="radio" name="sort" class="mr-2">Lowest price</li>
+        <li><input type="radio" name="sort" class="mr-2">Close to departure point</li>
+        <li><input type="radio" name="sort" class="mr-2">Close to arrival point</li>
+        <li><input type="radio" name="sort" class="mr-2">Shortest ride</li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold mb-2 text-blue-600 dark:text-blue-300">Departure Time</h2>
+      <ul class="text-sm space-y-2">
+        <li><label><input type="checkbox" class="mr-2">Before 06:00 </label></li>
+        <li><label><input type="checkbox" class="mr-2">06:00 - 12:00 </label></li>
+        <li><label><input type="checkbox" class="mr-2">12:01 - 18:00 </label></li>
+        <li><label><input type="checkbox" class="mr-2">After 18:00 </label></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold mb-2 text-blue-600 dark:text-blue-300">Trust & Safety</h2>
+      <ul class="text-sm space-y-2">
+        <li><label><input type="checkbox" class="mr-2">Verified Profile </label></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold mb-2 text-blue-600 dark:text-blue-300">Amenities</h2>
+      <ul class="text-sm space-y-2">
+        <li><label><input type="checkbox" class="mr-2">Max. 2 in the back </label></li>
+        <li><label><input type="checkbox" class="mr-2">Instant Booking </label></li>
+        <li><label><input type="checkbox" class="mr-2">Smoking allowed </label></li>
+        <li><label><input type="checkbox" class="mr-2">Pets allowed </label></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Ride Listings -->
+  <section class="w-full md:w-3/4 space-y-6">
+  {% for car in cars %}
+  <a href="{% url 'cardetails' car.pk %}" class="block">
+    <div class="bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-md rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer">
+      <div class="flex flex-col md:flex-row items-center justify-between px-6 py-4">
+
+        <!-- LEFT: Time + Route -->
+        <div class="w-full md:w-4/5 space-y-2">
+          <!-- TIMING LINE -->
+     <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+  <div class="flex flex-col items-start">
+    <span class="font-medium text-gray-700 dark:text-gray-300">
+      {{ car.from_date|time:"H:i" }} <!-- Start Time -->
+    </span>
+    <span class="text-xs text-gray-500">Start</span>
+  </div>
+
+  <div class="flex-1 mx-4 border-t border-dashed border-gray-400 relative">
+    <span class="absolute left-1/2 transform -translate-x-1/2 -top-4 bg-white dark:bg-gray-800 px-2 text-xs text-green-600">
+      {{ car.duration_min }} mins
+    </span>
+  </div>
+
+  <div class="flex flex-col items-end">
+    <span class="font-medium text-gray-700 dark:text-gray-300">
+      {{ car.estimated_arrival|time:"H:i" }} <!-- Corrected -->
+    </span>
+    <span class="text-xs text-gray-500">Arrival</span>
+  </div>
+
+          </div>
+
+          <!-- ROUTE LINE -->
+          <div class="text-sm text-gray-600 dark:text-gray-400 mt-2 flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-green-500"></i>
+            <span>{{ car.from_place }}</span>
+            <i class="fas fa-arrow-right text-gray-400"></i>
+            <span>{{ car.to_place }}</span>
+            <span class="ml-2 text-xs">({{ car.distance_km }} km)</span>
+          </div>
+
+          <!-- USER NAME -->
+          <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <i class="fas fa-user text-blue-500 mr-1"></i>{{ car.cust.fname }}
+          </div>
+        </div>
+
+        <!-- RIGHT: PRICE -->
+        <div class="w-full md:w-1/5 mt-4 md:mt-0 text-right">
+          <div class="text-blue-600 dark:text-blue-400 font-bold text-xl">
+            ₹{{ car.price }}
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">/ day</div>
+        </div>
+
+      </div>
+    </div>
+  </a>
+  {% empty %}
+  <div class="text-center text-gray-500 dark:text-gray-400 py-20">
+    No rides are available!
+  </div>
+  {% endfor %}
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-white dark:bg-gray-800 mt-20 py-6 px-4 text-sm text-center text-gray-600 dark:text-gray-300 border-t dark:border-gray-700">
+  <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between gap-6">
+    <div>
+      <h4 class="text-lg font-semibold text-blue-600 dark:text-blue-300 mb-2">Contact Us</h4>
+      <p><i class="fa fa-home mr-2"></i> Address: XXXXXXX Street</p>
+      <p><i class="fa fa-phone mr-2"></i> Mobile: 1234567890</p>
+      <p><i class="fa fa-envelope mr-2"></i> Email: abc@gmail.com</p>
+    </div>
+    <div>
+      <h4 class="text-lg font-semibold text-blue-600 dark:text-blue-300 mb-2">Quick Links</h4>
+      <a href="{% url 'home' %}" class="block hover:underline">Home</a>
+      <a href="{% url 'contact' %}" class="block hover:underline">Contact</a>
+      <a href="{% url 'login' %}" class="block hover:underline">Login</a>
+      <a href="{% url 'register' %}" class="block hover:underline">Register</a>
+    </div>
+  </div>
+  <p class="mt-6">© 2025 Smart Carpool. All rights reserved.</p>
+  
+</footer>
+
+</body>
+</html>
+{% endblock %}

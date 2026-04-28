@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-xl shadow-md">
+  <h2 class="text-xl font-semibold mb-4">Enter Driving License & DOB</h2>
+  <form method="POST">
+    {% csrf_token %}
+    
+    <!-- Driving License -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium">Driving License No</label>
+      <input type="text" name="driving_license_no" required class="w-full px-3 py-2 border rounded-md focus:outline-none">
+    </div>
+
+    <!-- Date of Birth -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium">Date of Birth</label>
+      <input type="date" name="dob" required class="w-full px-3 py-2 border rounded-md focus:outline-none">
+    </div>
+
+    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">Continue to Post Ride</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Smart Carpool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body class="bg-blue-50 text-gray-800">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <img src="{% static 'images/logo2.png' %}" alt="Logo" class="h-8">
+                <a href="{% url 'home' %}" class="text-xl font-bold text-blue-500">SmartCarpool</a>
+            </div>
+            <div class="space-x-4 text-sm">
+                <a href="{% url 'home' %}" class="hover:text-blue-500">Home</a>
+                <a href="{% url 'searchmycar' %}" class="hover:text-blue-500">Book a Car</a>
+                <a href="{% url 'allcars' %}" class="hover:text-blue-500">Cars</a>
+                <a href="{% url 'register' %}" class="hover:text-blue-500">Register</a>
+                <a href="{% url 'login' %}" class="text-blue-600 font-semibold">Login</a>
+                <a href="{% url 'contact' %}" class="hover:text-blue-500">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash messages -->
+    {% if messages %}
+        <div class="max-w-md mx-auto mt-6">
+            {% for message in messages %}
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-2" role="alert">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Login Form -->
+    <section class="flex items-center justify-center py-16 px-4">
+        <div class="max-w-md w-full bg-white p-8 rounded-xl shadow-lg">
+            <div class="text-center mb-6">
+                <img src="{% static 'images/i.jpg' %}" alt="SmartCarpool Logo" class="mx-auto h-14">
+                <h2 class="text-2xl font-bold text-blue-500 mt-2">Login to Your Account</h2>
+                <p class="text-sm text-gray-500 mt-1">Welcome back! Please enter your credentials.</p>
+            </div>
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <input type="text" id="username" name="usern" required
+                           class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" name="password" required
+                           class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                </div>
+                <div>
+                    <button type="submit"
+                            class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-lg transition duration-300">
+                        LOG IN
+                    </button>
+                </div>
+            </form>
+            <p class="mt-6 text-center text-sm text-gray-600">
+                Or <a href="{% url 'register' %}" class="text-blue-500 font-medium hover:underline">REGISTER</a> here
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t text-center text-gray-500 text-sm p-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            <div>
+                <h3 class="text-lg font-semibold text-blue-500 mb-2">Contact Us</h3>
+                <p><i class="fa fa-home mr-2 text-gray-500"></i>Address: XXXXXXX Street</p>
+                <p><i class="fa fa-phone mr-2 text-gray-500"></i>Mobile: 1234567890</p>
+                <p><i class="fa fa-envelope mr-2 text-gray-500"></i>Email: abc@gmail.com</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-blue-500 mb-2">Quick Links</h3>
+                <a href="{% url 'home' %}" class="text-blue-500 block hover:underline">Home</a>
+                <a href="{% url 'contact' %}" class="text-blue-500 block hover:underline">Contact</a>
+                <a href="{% url 'login' %}" class="text-blue-500 block hover:underline">Login</a>
+                <a href="{% url 'register' %}" class="text-blue-500 block hover:underline">Register</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

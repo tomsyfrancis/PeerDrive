@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard | SmartCarpool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map { height: 400px; width: 100%; }
+  </style>
+</head>
+<body class="bg-blue-50 font-sans">
+
+
+<div class="flex justify-end mb-4">
+  <a href="{% url 'total_earnings' %}" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 text-center inline-flex items-center">
+    <i class="fas fa-rupee-sign mr-2"></i>
+    <i class="fas fa-car mr-2"></i>
+    View My Earnings
+  </a>
+</div>
+
+  <!-- Dashboard Cards -->
+  <div class="max-w-4xl mx-auto py-10 grid grid-cols-1 sm:grid-cols-4 gap-6">
+    <!-- Offer Pool -->
+    <a href="{% url 'addmycar' %}" class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-xl transition">
+      <i class="fas fa-car text-4xl text-blue-400 mb-4"></i>
+      <h4 class="font-semibold text-lg text-gray-700">Offer Pool</h4>
+    </a>
+    <!-- Find Pool -->
+    <a href="{% url 'searchmycar' %}" class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-xl transition">
+      <i class="fas fa-search-location text-4xl text-blue-400 mb-4"></i>
+      <h4 class="font-semibold text-lg text-gray-700">Find Pool</h4>
+    </a>
+    <!-- My car -->
+    <a href="{% url 'mycar_list' %}" class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-xl transition">
+     <i class="fas fa-car-side text-4xl text-blue-400 mb-4"></i>
+
+      <h4 class="font-semibold text-lg text-gray-700">My car</h4>
+    </a>
+     <!-- My Booking -->
+    <a href="{% url 'customerbookings' %}" class="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-xl transition">
+    <i class="fas fa-chart-line text-4xl text-purple-500 mr-3"></i>
+
+      <h4 class="font-semibold text-lg text-gray-700">My Bookings</h4>
+    </a>
+    
+  </div>
+  
+  <!-- Map Section -->
+  <div class="w-full mt-10 px-0">
+    <h2 class="text-xl font-bold text-gray-700 mb-4 text-center">Nearby Ride Locations</h2>
+    <div id="map" class="shadow-md border-t border-b"></div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('map').setView([9.9674, 76.2455], 13); // Centered at Kochi
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // L.marker([9.9674, 76.2455]).addTo(map)
+    //   .bindPopup('You are here (Kochi)')
+    //   .openPopup();
+  </script>
+
+ 
+
+</body>
+</html>
+{% endblock %}

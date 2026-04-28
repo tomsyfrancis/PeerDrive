@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add My Car Details | Smart Carpool</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+  <script>
+  function toggleDropdown() {
+    const dropdown = document.getElementById("accountDropdown");
+    dropdown.classList.toggle("hidden");
+  }
+
+  // Optional: Hide dropdown when clicking outside
+  document.addEventListener("click", function (event) {
+    const profileBtn = document.getElementById("profileBtn");
+    const dropdown = document.getElementById("accountDropdown");
+
+    if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
+      dropdown.classList.add("hidden");
+    }
+  });
+</script>
+
+
+  <!-- Theme Toggle Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.getElementById('themeToggle');
+      toggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        const icon = toggle.querySelector('i');
+        icon.classList.toggle('fa-sun');
+        icon.classList.toggle('fa-moon');
+      });
+    });
+  </script>
+  
+  <!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<!-- Leaflet Routing Machine CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Leaflet Routing Machine -->
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+</head>
+
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-[Poppins]">
+
+
+
+
+  <!-- Flash Messages -->
+  {% if messages %}
+    <div class="max-w-xl mx-auto mt-4">
+      {% for message in messages %}
+        <div class="bg-yellow-100 text-yellow-800 p-3 rounded shadow mb-2">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+<!-- Journey Form Left-Aligned with Car Number and Passengers after Dates -->
+ 
+<!-- Form Section -->
+<section class="bg-blue-100 dark:bg-gray-800 text-gray-900 dark:text-white py-16 px-6">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Heading -->
+    <div class="w-full mb-10 text-center">
+      <h2 class="text-3xl font-bold dark:text-blue-300">Become a Smart Carpool Driver</h2>
+      <p class="mt-2 text-base text-gray-700 dark:text-gray-300">
+        Save on travel costs by sharing your ride with trusted passengers.
+      </p>
+    </div>
+
+    <!-- Form & Map Grid -->
+    <div class="flex flex-col md:flex-row gap-10">
+
+      <!-- Left Side: Form -->
+      <div class="w-full md:w-1/2">
+        <form method="post" enctype="multipart/form-data"
+              class="w-full bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+         {% csrf_token %}
+          <div class="space-y-4 text-sm">
+
+            <!-- From Place -->
+            <div class="relative">
+              <i class="fas fa-map-marker-alt absolute left-3 top-3 text-gray-400"></i>
+              <input type="text" name="from_place" id="from_place"
+                     placeholder="Leaving from (e.g., Infopark Phase 1)" required
+                     class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- To Place -->
+            <div class="relative">
+              <i class="fas fa-location-arrow absolute left-3 top-3 text-gray-400"></i>
+              <input type="text" name="to_place" id="to_place"
+                     placeholder="Going to (e.g., Thrikkakara)" required
+                     class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- From DateTime -->
+            <div class="relative">
+              <i class="fas fa-calendar-alt absolute left-3 top-3 text-gray-400"></i>
+              <input type="datetime-local" name="from_date" id="from_date" required
+                     class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- To DateTime -->
+            <div class="relative">
+              <i class="fas fa-calendar-check absolute left-3 top-3 text-gray-400"></i>
+              <input type="datetime-local" name="to_date" id="to_date" required
+                     class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Price -->
+            <div class="relative">
+              <i class="fas fa-rupee-sign absolute left-3 top-3 text-gray-400"></i>
+              <input type="number" name="price" id="price" placeholder="Price (₹) e.g., 250" min="0" step="1" required
+                     class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Seat Count -->
+            <div class="relative">
+              <i class="fas fa-user-friends absolute left-3 top-3 text-gray-400"></i>
+              <input type="number" name="seat_count" id="seat_count" placeholder="Number of passengers (e.g., 2)" min="1" max="5" required
+                     class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Car Type -->
+            <div class="relative">
+              <i class="fas fa-car-side absolute left-3 top-3 text-gray-400"></i>
+              <input type="text" name="car_type" id="car_type" placeholder="Car Type (e.g., Sedan, SUV)" required
+                     class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+            </div>
+             <!-- Car No -->
+            <div class="relative">
+              <i class="fas fa-car-side absolute left-3 top-3 text-gray-400"></i>
+              <input type="text" name="car_num" id="car_type" placeholder="Car Number" required
+                     class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Hidden Customer ID -->
+            {% if request.user.is_authenticated %}
+              <input type="hidden" name="cust_id" value="{{ request.user.customer.id }}">
+            {% endif %}
+
+            <!-- Submit Button -->
+            <div class="text-center pt-2">
+              <button type="submit"
+                      class="inline-flex items-center gap-2 bg-blue-300 hover:bg-blue-400 text-blue-900 font-semibold text-xs px-4 py-1.5 rounded-md shadow-sm transition">
+                <i class="fas fa-paper-plane"></i> Publish
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Side: Map -->
+      <div class="w-full md:w-1/2">
+        <!-- Map -->
+         <!-- Route Selection Panel -->
+<div id="routeList" class="mt-4 space-y-2 text-sm text-gray-800 dark:text-gray-200"></div>
+
+        <div id="map" class="h-96 rounded-xl shadow-lg border border-blue-200"></div>
+
+        <!-- Route Info -->
+        <div id="routeInfo" class="mt-4 text-sm text-gray-700 dark:text-gray-200"></div>
+
+      <div class="mt-5 flex space-x-4">
+  <button type="button" onclick="searchRoute()"
+    class="flex items-center space-x-2 px-4 py-2 bg-[#B0E0E6] text-gray-800 font-medium rounded-lg shadow hover:bg-[#a0d4dc] text-sm transition">
+    <i class="fas fa-route"></i>
+    <span>Search Routes</span>
+  </button>
+
+  <button type="button" onclick="clearRoute()"
+    class="flex items-center space-x-2 px-4 py-2 bg-gray-400 text-white rounded-lg shadow hover:bg-gray-500 text-sm transition">
+    <i class="fas fa-times-circle"></i>
+    <span>Clear</span>
+  </button>
+</div>
+
+      </div>
+
+    </div> <!-- End Flex Row -->
+
+  </div>
+</section>
+
+
+<script>
+let map = L.map('map').setView([10.0159, 76.3419], 13); // Kochi default
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+let routeLayer = null;
+let markers = [];
+
+async function searchRoute() {
+  clearRoute();
+
+  const fromPlace = document.getElementById('from_place').value;
+  const toPlace = document.getElementById('to_place').value;
+
+  if (!fromPlace || !toPlace) {
+    alert("Please enter both From and To locations.");
+    return;
+  }
+
+  // Geocode both places using OpenStreetMap Nominatim API
+  async function geocode(place) {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`);
+    const data = await res.json();
+    if (!data || data.length === 0) throw new Error("Location not found: " + place);
+    return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+  }
+
+  try {
+    const start = await geocode(fromPlace);
+    const end = await geocode(toPlace);
+
+    const apiKey = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijc0ZDA2MTc1ZjJmYzRhMjdhNGI0NDU2OWNlZTVlYTBiIiwiaCI6Im11cm11cjY0In0=';
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': apiKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        coordinates: [start, end],
+        instructions: false,
+        preference: "recommended"  // uses highway where applicable
+      })
+    });
+
+    const data = await response.json();
+    const coords = data.features[0].geometry.coordinates.map(p => [p[1], p[0]]);
+    const distance = (data.features[0].properties.summary.distance / 1000).toFixed(2);
+    const duration = Math.ceil(data.features[0].properties.summary.duration / 60);
+
+    routeLayer = L.polyline(coords, {
+      color: 'blue',
+      weight: 5,
+      opacity: 0.8
+    }).addTo(map);
+
+    // Add start and end markers
+    const fromMarker = L.marker([start[1], start[0]]).addTo(map).bindPopup("Start: " + fromPlace).openPopup();
+    const toMarker = L.marker([end[1], end[0]]).addTo(map).bindPopup("End: " + toPlace);
+
+    markers.push(fromMarker, toMarker);
+
+    map.fitBounds(routeLayer.getBounds());
+
+    // Show route info
+    document.getElementById('routeInfo').innerHTML =
+      `<p class="mt-2 text-blue-800 dark:text-blue-200 font-semibold">Distance: ${distance} km<br>Duration: ${duration} min</p>`;
+
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+}
+
+function clearRoute() {
+  if (routeLayer) {
+    map.removeLayer(routeLayer);
+    routeLayer = null;
+  }
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+  document.getElementById('routeInfo').innerHTML = '';
+  document.getElementById('routeList').innerHTML = '';
+}
+</script>
+
+
+
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 dark:bg-gray-800 mt-20 py-6 px-4 text-sm text-center text-gray-600 dark:text-gray-300">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between gap-4">
+      <div>
+        <h4 class="text-lg font-semibold text-blue-600 dark:text-blue-300 mb-2">Contact Us</h4>
+        <p><i class="fa fa-home mr-2"></i> Address: XXXXXXX Street</p>
+        <p><i class="fa fa-phone mr-2"></i> Mobile: 1234567890</p>
+        <p><i class="fa fa-envelope mr-2"></i> Email: abc@gmail.com</p>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold text-blue-600 dark:text-blue-300 mb-2">Quick Links</h4>
+        <a href="{% url 'home' %}" class="block hover:underline">Home</a>
+        <a href="{% url 'contact' %}" class="block hover:underline">Contact</a>
+        <a href="{% url 'allcars' %}" class="block hover:underline">Cars</a>
+        <a href="{% url 'searchmycar' %}" class="block hover:underline">Book</a>
+      </div>
+    </div>
+    <p class="mt-6">© 2025 Smart Carpool. All rights reserved.</p>
+  </footer>
+
+
+
+</body>
+
+</html>
+{% endblock %}

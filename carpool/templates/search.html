@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book Your Car | Smart Carpool</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+
+  <!-- Theme Toggle Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.getElementById('themeToggle');
+      toggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        const icon = toggle.querySelector('i');
+        icon.classList.toggle('fa-sun');
+        icon.classList.toggle('fa-moon');
+      });
+    });
+  </script>
+</head>
+
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-[Poppins]">
+
+  <!-- Navbar -->
+ 
+
+  <!-- Flash Messages -->
+  {% if messages %}
+    <div class="max-w-xl mx-auto mt-4">
+      {% for message in messages %}
+        <div class="bg-yellow-100 text-yellow-800 p-3 rounded shadow mb-2">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+ <!-- Dashboard Cards -->
+<!-- Wide, Clean Ride Search Bar -->
+<div class="max-w-7xl mx-auto mt-12 px-4">
+  <form method="POST" action="{% url 'searchmycar' %}" class="flex flex-col md:flex-row items-center bg-white rounded-full shadow-lg overflow-hidden w-full">
+    {% csrf_token %}
+
+    <!-- Leaving From -->
+    <div class="flex items-center px-5 py-4 space-x-3 flex-1">
+      <i class="fa fa-dot-circle-o text-blue-600 text-xl"></i>
+      <input type="text" name="from_place" placeholder="Leaving from" required
+        class="bg-transparent focus:outline-none w-full text-gray-700 placeholder-gray-500 text-base">
+    </div>
+
+    <!-- Divider -->
+    <div class="hidden md:block border-l h-6 border-gray-300"></div>
+
+    <!-- Going To -->
+    <div class="flex items-center px-5 py-4 space-x-3 flex-1">
+      <i class="fa fa-dot-circle-o text-green-600 text-xl"></i>
+      <input type="text" name="to_place" placeholder="Going to" required
+        class="bg-transparent focus:outline-none w-full text-gray-700 placeholder-gray-500 text-base">
+    </div>
+
+    <!-- Divider -->
+    <div class="hidden md:block border-l h-6 border-gray-300"></div>
+<!-- Travel Date (Single Field) -->
+<div class="relative flex items-center px-5 py-4 space-x-3 flex-1">
+  <i class="fa fa-calendar text-purple-600 text-xl"></i>
+  <input type="date" name="travel_date" id="travelDate" required
+    class="bg-transparent focus:outline-none w-full text-gray-700 placeholder-transparent text-base peer">
+</div>
+
+
+    <!-- Divider -->
+    <div class="hidden md:block border-l h-6 border-gray-300"></div>
+
+    <!-- Passenger -->
+    <div class="flex items-center px-5 py-4 space-x-3 flex-1">
+      <i class="fa fa-user text-pink-600 text-xl"></i>
+      <input type="number" name="seat_count" min="1" max="5" placeholder="1 passenger"
+        class="bg-transparent focus:outline-none w-full text-gray-700 placeholder-gray-500 text-base">
+    </div>
+
+    <!-- Search Button -->
+    <button type="submit"
+      class="text-white font-semibold text-base px-12 py-4 rounded-r-full rounded-l-none whitespace-nowrap transition duration-200"
+      style="background-color: #158eba;">
+      Search
+    </button>
+  </form>
+</div>
+
+<!-- JavaScript to set default date -->
+<script>
+  const fromInput = document.getElementById('fromDate');
+  const toInput = document.getElementById('toDate');
+  const today = new Date().toISOString().split('T')[0];
+  fromInput.value = today;
+  toInput.value = today;
+</script>
+<!-- Route Recommendations -->
+<div class="max-w-7xl mx-auto mt-16 px-4">
+  <h2 class="text-2xl font-semibold mb-6 text-blue-700 dark:text-blue-300">Recommended Routes</h2>
+  
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Example Route Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5 hover:shadow-lg transition">
+      <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Kochi → Trivandrum</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-300">Daily rides available at 8:00 AM & 6:00 PM.</p>
+      <p class="text-sm text-green-600 font-semibold mt-2">Eco-friendly carpool · ₹200 per seat</p>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5 hover:shadow-lg transition">
+      <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Kozhikode → Kochi</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-300">Best for weekend return trips. 3 rides available.</p>
+      <p class="text-sm text-green-600 font-semibold mt-2">₹180 per seat · A/C Sedans</p>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5 hover:shadow-lg transition">
+      <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Kochi → Bangalore</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-300">Long-distance route. Book 1 day in advance.</p>
+      <p class="text-sm text-green-600 font-semibold mt-2">Starts at ₹550 · 5 hrs trip</p>
+    </div>
+  </div>
+
+  <!-- More Suggestions -->
+  <div class="mt-12">
+    <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-300 mb-4">Tips for Carpoolers</h3>
+    <ul class="list-disc pl-6 text-sm text-gray-700 dark:text-gray-300 space-y-1">
+      <li>Always confirm ride time and pickup point with the driver.</li>
+      <li>Be punctual and respectful of shared space.</li>
+      <li>Use the in-app chat to clarify route or payment details.</li>
+      <li>Check driver ratings and reviews before booking.</li>
+    </ul>
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 dark:bg-gray-800 mt-20 py-6 px-4 text-sm text-center text-gray-600 dark:text-gray-300">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between gap-4">
+      <div>
+        <h4 class="text-lg font-semibold text-blue-600 dark:text-blue-300 mb-2">Contact Us</h4>
+        <p><i class="fa fa-home mr-2"></i> Address: XXXXXXX Street</p>
+        <p><i class="fa fa-phone mr-2"></i> Mobile: 1234567890</p>
+        <p><i class="fa fa-envelope mr-2"></i> Email: abc@gmail.com</p>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold text-blue-600 dark:text-blue-300 mb-2">Quick Links</h4>
+        <a href="{% url 'home' %}" class="block hover:underline">Home</a>
+        <a href="{% url 'contact' %}" class="block hover:underline">Contact</a>
+        <a href="{% url 'login' %}" class="block hover:underline">Login</a>
+        <a href="{% url 'register' %}" class="block hover:underline">Register</a>
+      </div>
+    </div>
+    <p class="mt-6">© 2025 Smart Carpool. All rights reserved.</p>
+  </footer>
+
+</body>
+
+</html>
+{% endblock %}

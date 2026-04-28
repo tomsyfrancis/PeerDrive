@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-8 mt-10">
+  <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Complete Your Payment</h2>
+
+  <div class="mb-4">
+    <p class="text-gray-700"><strong>Booking ID:</strong> {{ booking.id }}</p>
+    <p class="text-gray-700"><strong>User:</strong> {{ user.fname }}</p>
+    <p class="text-gray-700"><strong>Car:</strong> {{ booking.car.car_name }}</p>
+    <p class="text-gray-700"><strong>Amount:</strong> ₹{{ booking.car.price }}</p>
+  </div>
+
+  <form id="paymentForm" class="space-y-6">
+    <h3 class="text-lg font-semibold text-gray-700">Choose Payment Method</h3>
+    
+    <div class="flex flex-col space-y-2">
+      <label class="flex items-center space-x-2">
+        <input type="radio" name="payment_method" value="upi" class="text-blue-600" checked>
+        <span>UPI</span>
+      </label>
+      <label class="flex items-center space-x-2">
+        <input type="radio" name="payment_method" value="card" class="text-blue-600">
+        <span>Credit/Debit Card</span>
+      </label>
+      <label class="flex items-center space-x-2">
+        <input type="radio" name="payment_method" value="cash" class="text-blue-600">
+        <span>Cash</span>
+      </label>
+    </div>
+
+    <div id="paymentDetails" class="mt-4">
+      <!-- UPI Input -->
+      <div id="upiInput" class="hidden">
+        <label class="block text-sm font-medium text-gray-600">Enter UPI ID</label>
+        <input type="text" name="upi_id" placeholder="example@upi" class="w-full mt-1 border rounded px-4 py-2">
+      </div>
+
+      <!-- Card Inputs -->
+      <div id="cardInputs" class="hidden">
+        <label class="block text-sm font-medium text-gray-600">Card Number</label>
+        <input type="text" placeholder="XXXX-XXXX-XXXX-XXXX" class="w-full mt-1 border rounded px-4 py-2">
+        <div class="flex space-x-4 mt-2">
+          <div class="w-1/2">
+            <label class="block text-sm">Expiry</label>
+            <input type="text" placeholder="MM/YY" class="w-full mt-1 border rounded px-4 py-2">
+          </div>
+          <div class="w-1/2">
+            <label class="block text-sm">CVV</label>
+            <input type="password" placeholder="123" class="w-full mt-1 border rounded px-4 py-2">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" id="payBtn"
+      class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition">
+      Pay ₹{{ booking.car.price }}
+    </button>
+
+    <p id="paymentStatus" class="text-center text-lg font-semibold text-green-600 hidden mt-4">Paid Successfully ✔</p>
+  </form>
+  <div class="text-center mt-6">
+  <a href="{% url 'feedback' %}" class="inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
+    Give Feedback
+  </a>
+</div>
+
+</div>
+
+<script>
+  const methodRadios = document.querySelectorAll('input[name="payment_method"]');
+  const upiInput = document.getElementById("upiInput");
+  const cardInputs = document.getElementById("cardInputs");
+  const payBtn = document.getElementById("payBtn");
+  const paymentStatus = document.getElementById("paymentStatus");
+
+  methodRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      upiInput.classList.add("hidden");
+      cardInputs.classList.add("hidden");
+
+      if (radio.value === "upi") upiInput.classList.remove("hidden");
+      if (radio.value === "card") cardInputs.classList.remove("hidden");
+    });
+  });
+
+  payBtn.addEventListener('click', () => {
+    payBtn.textContent = "Paid ✔";
+    payBtn.disabled = true;
+    payBtn.classList.remove("bg-green-600");
+    payBtn.classList.add("bg-gray-400", "cursor-not-allowed");
+    paymentStatus.classList.remove("hidden");
+  });
+</script>
+{% endblock %}
